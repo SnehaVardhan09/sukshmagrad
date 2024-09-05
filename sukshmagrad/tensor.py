@@ -9,15 +9,19 @@ class State:
         self._prev = set(_childern)
         self._op = _op #the op that produced this node, for graphviz / debugging / etc
 
+    def __repr__(self):
+        return f"State(data={self.data}, grad={self.grad})"
+
+
     def __add__(self, other):
         other = other if isinstance(other, State) else State(other)
         out = State(self.data + other.data, (self, other), '+')
 
-        def _backward():
-            self.grad += out.grad
-            other.grad += out.grad
+        # def _backward():
+        #     self.grad += out.grad
+        #     other.grad += out.grad
         
-        out._backward = _backward
+        # out._backward = _backward
 
         return out
 
@@ -25,11 +29,11 @@ class State:
         other = other if isinstance(other, State) else State(other)
         out = State(self.data  * other.data, (self, other), '*')
 
-        def _backward():
-            self.grad += other.data * out.grad
-            other.grad += self.data * out.grad
+        # def _backward():
+        #     self.grad += other.data * out.grad
+        #     other.grad += self.data * out.grad
         
-        out._backward - _backward
+        # out._backward - _backward
 
         return out
 
@@ -37,15 +41,32 @@ class State:
         assert isinstance(other, (int, float)), "only supporting int/float powers for now"
         out = State(self.data**other, (self,), f'**{other}')
 
-        def _backward():
-            self.grad += (other * self.data**(other-1)) * out.grad
-        out._backward = _backward
-        return out
+        # def _backward():
+        #     self.grad += (other * self.data**(other-1)) * out.grad
+        # out._backward = _backward
+        # return out
 
     def relu(self):
         out = State(0 if self.data < 0 else self.data, (self, ), 'RelU')
 
-        def _backward():
-            self.grad += (out.data> 0)*out.grad
-        out._backward = _backward
+        # def _backward():
+        #     self.grad += (out.data> 0)*out.grad
+        # out._backward = _backward
 
+
+    # def backward(self):
+    #     #topological order all of the childern in the graph
+    #     topo = []
+    #     visited = set()
+    #     def build_topo(v):
+    #         if v not in visited:
+    #             visited.add(v)
+    #             for child in v._prev:
+    #                 build_topo(child)
+    #             topo.append(v)
+    #     build_topo(self)
+    
+    def __repr__(self):
+        return f"State(data={self.data}, grad={self.grad})"
+
+        
