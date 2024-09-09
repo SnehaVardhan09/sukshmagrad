@@ -1,4 +1,0 @@
-value = state
-_childern = This is likely intended to store child elements or nodes, possibly in a tree or hierarchical structure. 
-            The underscore prefix suggests it might be intended for internal use within the class.
-    
